@@ -1,6 +1,9 @@
 using TMPro;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace Code
 {
     public class GridItem : MonoBehaviour
@@ -29,15 +32,14 @@ namespace Code
 
                     if (itemInGridSpace != null)
                     {
-                        GameObject.Destroy(itemInGridSpace);
+                        RemoveTrack();
                     }
                     
                     break;
                 case ItemType.track:
                     if (currentItemType != ItemType.track)
                     {
-                        itemInGridSpace = Instantiate(Resources.Load("Track") as GameObject);
-                        itemInGridSpace.transform.position = transform.position;
+                        SpawnTrack();
                     }
                     
                     break;
@@ -45,6 +47,21 @@ namespace Code
 
 
             currentItemType = itemType;
+        }
+
+        public void SpawnTrack()
+        {
+            itemInGridSpace = Instantiate(Resources.Load("Track") as GameObject, transform);
+            itemInGridSpace.transform.position = transform.position;
+#if UNITY_EDITOR
+            SceneVisibilityManager.instance.DisablePicking(itemInGridSpace, true);
+#endif
+        }
+
+        public void RemoveTrack()
+        {
+            GameObject.Destroy(itemInGridSpace);
+            itemInGridSpace = null;
         }
     }
 }
