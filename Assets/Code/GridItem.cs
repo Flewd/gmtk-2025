@@ -11,7 +11,7 @@ namespace Code
         public enum ItemType { empty, track }
         public GameObject itemInGridSpace;
         public TMP_Text text;
-        public ItemType currentItemType = ItemType.empty;
+        public ItemType currentItemType;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
@@ -51,7 +51,7 @@ namespace Code
 
         public void SpawnTrack()
         {
-            itemInGridSpace = Instantiate(Resources.Load("Track") as GameObject, transform);
+            itemInGridSpace = PrefabUtility.InstantiatePrefab(Resources.Load("Track"), transform) as GameObject;
             itemInGridSpace.transform.position = transform.position;
 #if UNITY_EDITOR
             SceneVisibilityManager.instance.DisablePicking(itemInGridSpace, true);
