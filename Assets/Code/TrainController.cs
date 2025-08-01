@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Code
@@ -8,19 +9,21 @@ namespace Code
 
         public Vector2 trackIndex;
         public GridItem currentTrack;
-        
+
         public Vector2 targetTrackIndex;
         public GridItem targetTrack;
 
         public float trainSpeed = 10;
         public int turnSpeed = 30;
-        
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+
         void Start()
         {
             SetClosestTrack();
             NextTrack();
         }
+
+
 
         // Update is called once per frame
         void Update()
@@ -33,7 +36,7 @@ namespace Code
                 currentTrack = targetTrack;
                 NextTrack();
             }
-          //  else if (distance < 1)
+            //  else if (distance < 1)
             {
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Util.NormalizedDirection(currentTrack.transform.position, targetTrack.transform.position)), turnSpeed * Time.deltaTime);
             }
@@ -44,7 +47,7 @@ namespace Code
         {
             var dir = transform.forward;
             Vector2 indexDirection = Vector2.zero;
-            
+
             if (dir.x < -0.5f)  // left
             {
                 indexDirection.x = -1;
@@ -53,7 +56,7 @@ namespace Code
             else if (dir.x > 0.5f)  // right
             {
                 indexDirection.x = 1;
-                indexDirection.y = 0;   
+                indexDirection.y = 0;
             }
             else if (dir.z < -0.5f) // up
             {
@@ -69,16 +72,16 @@ namespace Code
             targetTrackIndex = grid.ConnectingTrack(trackIndex, indexDirection);
             targetTrack = grid.Get(targetTrackIndex);
         }
-        
+
         private void SetClosestTrack()
         {
             GridItem closest = null;
             float closestDistance = float.MaxValue;
             Vector2 trackIndex = Vector2.zero;
-            
-            for (int x = 0; x < grid.grid.GetLength(0); x++)
+
+            for (int x = 0; x < grid.gridSize.x; x++)
             {
-                for (int y = 0; y < grid.grid.GetLength(1); y++)
+                for (int y = 0; y < grid.gridSize.y; y++)
                 {
                     var item = grid.grid[x, y];
                     if (item.currentItemType == GridItem.ItemType.track)
@@ -93,15 +96,15 @@ namespace Code
                             trackIndex.y = y;
                         }
                     }
-                    
+
                 }
             }
 
             currentTrack = closest;
             this.trackIndex = trackIndex;
-            
-            
+
+
         }
-        
+
     }
 }
