@@ -41,7 +41,7 @@ namespace Code.Editor
 
         public override void OnInspectorGUI()
         {
-            Debug.Log("OnInspectorGUI");
+            //Debug.Log("OnInspectorGUI");
             DrawDefaultInspector();
             if (!Application.isPlaying)
             {

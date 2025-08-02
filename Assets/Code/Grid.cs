@@ -33,6 +33,7 @@ namespace Code
                     int index = (int)(gridSize.y * x + y);
                     grid[x, y] = transform.GetChild(index).GetComponent<GridItem>();
 
+                    grid[x, y].text.text = $"{x},{y}";
 
                     Debug.Log($"{x},{y} = {grid[x, y].name}");
 
@@ -44,22 +45,26 @@ namespace Code
 
         private void SetGridSize()
         {
-            grid = new GridItem[gridSize.x, gridSize.y];           
+            grid = new GridItem[gridSize.x, gridSize.y];
         }
 
         public GridItem Get(Vector2 index)
         {
             if (index.x < 0 ||
-                index.x >= grid.GetLength(0))
+                index.x >= gridSize.x)
             {
                 return null;
             }
             if (index.y < 0 ||
-                index.y >= grid.GetLength(1))
+                index.y >= gridSize.y)
             {
                 return null;
             }
-            return grid[Mathf.RoundToInt(index.x), Mathf.RoundToInt(index.y)];
+
+            var gridItem = grid[Mathf.RoundToInt(index.x), Mathf.RoundToInt(index.y)];
+
+            //Debug.Log($"Getting griditem at {index.x},{index.y} gives out {gridItem.name}");
+            return gridItem;
         }
 
         /// <summary>
@@ -70,9 +75,16 @@ namespace Code
         /// <returns></returns>
         public Vector2 ConnectingTrack(Vector2 startIndex, Vector2 startDirection)
         {
+            //Debug.Log("------Check ConnectingTrack ---------------------");
+            var currentGridItem = Get(startIndex);
+
             // check forward
             var target = startIndex + startDirection;
             var targetItem = Get(target);
+
+            //var resultString = targetItem != null && targetItem.currentItemType == GridItem.ItemType.track ? "FOUND" : "NOT";
+            //Debug.Log($"(Forward {startDirection.ToString()}) currently at {startIndex.x},{startIndex.y}, fetching {target.x},{target.y} - {resultString}");
+
             if (targetItem != null &&
                 targetItem.currentItemType == GridItem.ItemType.track)
             {
@@ -80,26 +92,44 @@ namespace Code
             }
 
             // check left
-            target = startIndex + TurnDirLeft(startDirection);
+            var leftDir = TurnDirLeft(startDirection);
+            target = startIndex + leftDir;
             targetItem = Get(target);
+
+            //resultString = targetItem != null && targetItem.currentItemType == GridItem.ItemType.track ? "FOUND" : "NOT";
+            //Debug.Log($"(Left {leftDir.ToString()}) currently at {startIndex.x},{startIndex.y}, fetching {target.x},{target.y} - {resultString}");
+
             if (targetItem != null &&
                 targetItem.currentItemType == GridItem.ItemType.track)
             {
                 return target;
             }
+
 
             //check right
-            target = startIndex + TurnDirRight(startDirection);
+            var rightDir = TurnDirRight(startDirection);
+            target = startIndex + rightDir;
             targetItem = Get(target);
+
+            //resultString = targetItem != null && targetItem.currentItemType == GridItem.ItemType.track ? "FOUND" : "NOT";
+            //Debug.Log($"(Right {rightDir.ToString()}) currently at {startIndex.x},{startIndex.y}, fetching {target.x},{target.y} - {resultString}");
+
             if (targetItem != null &&
                 targetItem.currentItemType == GridItem.ItemType.track)
             {
                 return target;
             }
 
+
+
             // check backwards last
-            target = startIndex + (startDirection * -1);
+            var backDir = (startDirection * -1);
+            target = startIndex + backDir;
             targetItem = Get(target);
+
+            //resultString = targetItem != null && targetItem.currentItemType == GridItem.ItemType.track ? "FOUND" : "NOT";
+            //Debug.Log($"(Back {backDir.ToString()}) currently at {startIndex.x},{startIndex.y}, fetching {target.x},{target.y} - {resultString}");
+
             if (targetItem != null &&
                 targetItem.currentItemType == GridItem.ItemType.track)
             {

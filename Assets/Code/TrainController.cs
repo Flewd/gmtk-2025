@@ -46,6 +46,7 @@ namespace Code
         private void NextTrack()
         {
             var dir = transform.forward;
+            //Debug.Log($"Train Forward {dir.ToString()}");
             Vector2 indexDirection = Vector2.zero;
 
             if (dir.x < -0.5f)  // left
@@ -61,12 +62,12 @@ namespace Code
             else if (dir.z < -0.5f) // up
             {
                 indexDirection.x = 0;
-                indexDirection.y = 1;
+                indexDirection.y = -1;
             }
             else if (dir.z > 0.5f) // down
             {
                 indexDirection.x = 0;
-                indexDirection.y = -1;
+                indexDirection.y = 1;
             }
 
             targetTrackIndex = grid.ConnectingTrack(trackIndex, indexDirection);
